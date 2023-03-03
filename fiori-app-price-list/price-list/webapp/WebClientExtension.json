@@ -1,9 +1,9 @@
 {
     "tiles": [
       {
-        "text": "Clone Planner",
+        "text": "Price List",
         "subtitle": "",
-        "icon": "sap-icon://copy"
+        "icon": "sap-icon://sum"
       }
     ]
   }
