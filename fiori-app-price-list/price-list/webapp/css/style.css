@@ -1,0 +1,23 @@
+.objectPage .sapFDynamicPageHeader.sapFDynamicPageHeaderWithContent {
+    padding: 1rem;
+}
+
+.objectPage .sapFDynamicPageHeader .sapMOH {
+    padding: 0rem;
+}
+
+.dyPage .sapContrastPlus .sapFDynamicPageTitle,
+.objectPage .sapContrastPlus .sapFDynamicPageTitle {
+    padding: 1rem 1rem;
+    padding-bottom: 0px;
+}
+
+
+.panelPriceList .sapMPanelContent {
+    padding: 0px 0px !important;
+}
+
+.custFDynamicPageTitle .sapFDynamicPageTitleMain>.sapFDynamicPageTitleMainInner .sapFDynamicPageTitleMainHeading,
+.custFDynamicPageTitle .sapFDynamicPageHeader {
+    min-width: 0px !important;
+}

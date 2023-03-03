@@ -1,0 +1,56 @@
+<mvc:View controllerName="com.9b.priceList.controller.PriceList" xmlns:f="sap.f" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m">
+	<f:DynamicPage showFooter="{jsonModel>/createMode}">
+		<f:title>
+			<f:DynamicPageTitle>
+				<f:actions>
+					<Button text="Edit" type="Transparent" press="handleEdit" visible="{= ${jsonModel>/createMode} ? false : true}"/>
+				</f:actions>
+			</f:DynamicPageTitle>
+		</f:title>
+		<f:footer>
+			<OverflowToolbar>
+				<ToolbarSpacer/>
+				<Button type="Accept" text="{i18n>Save}" press="handleEditSave"/>
+				<Button type="Reject" text="{i18n>Cancel}" press="handleEditCancel"/>
+			</OverflowToolbar>
+		</f:footer>
+		<f:content>
+			<VBox>
+				<Table showNoData="true"  mode="None" growing="true" growingScrollToLoad="true"
+					items="{path:'jsonModel>/itemMasterData',templateShareable:true}" id="InventoryTable" updateFinished="updateFinished"
+					updateStarted="updateStarted">
+					<headerToolbar>
+						<Toolbar>
+							<Title text="Items ({jsonModel>/itemCount})"/>
+							<ToolbarSpacer/>
+							<SearchField liveChange="onSearch" width="60%"/>
+							<Select busy="{jsonModel>/priceBusy}" width="18rem" change="onChanagePriceList" items="{jsonModel>/priceListData}">
+								<!--<core:Item key="{jsonModel>U_License_Number}" text="{jsonModel>U_Name} - {jsonModel>U_License_Number}"/>-->
+								<core:Item key="{jsonModel>BasePriceList}" text="{jsonModel>BasePriceList} - {jsonModel>PriceListName}"/>
+							</Select>
+						</Toolbar>
+					</headerToolbar>
+					<columns>
+						<Column width="30%">
+							<Label text="Item Code" design="Bold"/>
+						</Column>
+						<Column width="50%">
+							<Label text="Item Name" design="Bold"/>
+						</Column>
+						<Column width="20%">
+							<Label text="Price" design="Bold"/>
+						</Column>
+					</columns>
+					<ColumnListItem>
+						<cells>
+							<Text text="{jsonModel>ItemCode}"/>
+							<Text text="{jsonModel>ItemName}"/>
+							<Input value="{jsonModel>Price_Each}" editable="{jsonModel>/createMode}" change="handleValueChange"/>
+						</cells>
+					</ColumnListItem>
+				</Table>
+			</VBox>
+		</f:content>
+	</f:DynamicPage>
+</mvc:View>
