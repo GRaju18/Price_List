@@ -62,7 +62,7 @@ sap.ui.define([
 				serviceLayerbaseUrl: "https://demo.seedandbeyond.com/webx/index.html#",
 				target: {
 					Strain: "webclient-ext-strainlist-app-content-sapb1strainlist",
-					ClonePlanner: "webclient-ext-clone-planner-app-content-sapb1cloneplanner",
+					ClonePlanner: "webclient-ext-price-listplanner-app-content-sapb1cloneplanner",
 					VegPlanner: "webclient-ext-veg-planner-app-content-sapb1vegplanner",
 					FlowerPlanner: "webclient-ext-flowering-app-content-sapb1flowering",
 					Harvest: "webclient-ext-harvest-planner-app-content-sapb1harvest-planner",

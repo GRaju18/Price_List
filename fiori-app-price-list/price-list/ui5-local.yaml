@@ -1,6 +1,6 @@
 specVersion: '2.0'
 metadata:
-  name: 'clone-planner'
+  name: 'price-listplanner'
 type: application
 framework:
   name: SAPUI5

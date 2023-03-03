@@ -46,7 +46,7 @@
 						<cells>
 							<Text text="{jsonModel>ItemCode}"/>
 							<Text text="{jsonModel>ItemName}"/>
-							<Input value="{jsonModel>Price_Each}" editable="{jsonModel>/createMode}" change="handleValueChange"/>
+							<Input value="{jsonModel>Price_Each}" type="Number" editable="{jsonModel>/createMode}" change="handleValueChange"/>
 						</cells>
 					</ColumnListItem>
 				</Table>

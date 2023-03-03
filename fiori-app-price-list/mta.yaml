@@ -1,13 +1,13 @@
 _schema-version: "3.2"
-ID: ext-fiori-clone-planner
+ID: ext-fiori-price-list
 version: 0.0.1
 provider: SAP
 modules:
-- name: ext-clone-planner-app-content
+- name: ext-price-list-app-content
   type: com.sap.application.content
   path: .
   requires:
-  - name: ext-clone-planner-html5-repo-host
+  - name: ext-price-list-html5-repo-host
     parameters:
       content-target: true
   build-parameters:
@@ -19,7 +19,7 @@ modules:
       target-path: resources/
 - name: sapb1cloneplanner
   type: html5
-  path: clone-planner
+  path: price-list
   build-parameters:
     build-result: dist
     builder: custom
@@ -28,11 +28,11 @@ modules:
     - npm run build:cf
     supported-platforms: []
 resources:
-- name: ext-clone-planner-html5-repo-host
+- name: ext-price-list-html5-repo-host
   type: org.cloudfoundry.managed-service
   parameters:
     service: html5-apps-repo
-    service-name: ext-clone-planner-html5-app-host-service
+    service-name: ext-price-list-html5-app-host-service
     service-plan: app-host
 parameters:
   deploy_mode: b1-webclient

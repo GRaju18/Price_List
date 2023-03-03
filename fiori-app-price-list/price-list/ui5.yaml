@@ -1,6 +1,6 @@
 specVersion: '1.0'
 metadata:
-  name: 'clone-planner'
+  name: 'price-listplanner'
 type: application
 ui5Theme: sap_fiori_3
 server:
