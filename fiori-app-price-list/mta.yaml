@@ -14,10 +14,10 @@ modules:
     build-result: resources
     requires:
     - artifacts:
-      - sapb1cloneplanner.zip
-      name: sapb1cloneplanner
+      - sapb1pricelist.zip
+      name: sapb1pricelist
       target-path: resources/
-- name: sapb1cloneplanner
+- name: sapb1pricelist
   type: html5
   path: price-list
   build-parameters:
