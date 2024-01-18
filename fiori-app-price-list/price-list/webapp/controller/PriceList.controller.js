@@ -31,7 +31,7 @@ sap.ui.define([
 		loadPriceListData: function () {
 			var jsonModel = this.getOwnerComponent().getModel("jsonModel");
 			jsonModel.setProperty("/priceListBusy", true);
-			this.readServiecLayer("/b1s/v1/PriceLists", function (data) {
+			this.readServiecLayer("/b1s/v2/PriceLists", function (data) {
 				jsonModel.setProperty("/priceListName", "1");
 				jsonModel.setProperty("/priceListData", data.value);
 
@@ -68,7 +68,7 @@ sap.ui.define([
 			var jsonModel = this.getOwnerComponent().getModel("jsonModel");
 			var filters = "?$filter=PriceList eq " + "'" + priceList + "'";
 				var orderBy = "&$orderby=ItemCode";
-			this.readServiecLayer("/b1s/v1/sml.svc/PRICELISTSQUERY" + filters + orderBy, function (data) {
+			this.readServiecLayer("/b1s/v2/sml.svc/PRICELISTSQUERY" + filters + orderBy, function (data) {
 				jsonModel.setProperty("/itemMasterData", data.value);
 				jsonModel.setProperty("/itemCount", data.value.length);
 			}, this.getView());
@@ -99,7 +99,7 @@ sap.ui.define([
 				};
 				var priceList = Number(info.PriceList);
 			
-				that.updateServiecLayer("/b1s/v1/Items" + "('" + info.ItemCode + "')", function () {
+				that.updateServiecLayer("/b1s/v2/Items" + "('" + info.ItemCode + "')", function () {
 					if (length === i) {
 						that.getView().setBusy(false);
 						sap.m.MessageBox.success("Item Price Updated");
@@ -179,7 +179,7 @@ sap.ui.define([
 				var priceList = sObj.PriceList;
 				var priceListName = this.priceListName;
 				priceInfoDialog.setBusy(true);
-				this.updateServiecLayer("/b1s/v1/Items" + "('" + sObj.ItemCode + "')", function () {
+				this.updateServiecLayer("/b1s/v2/Items" + "('" + sObj.ItemCode + "')", function () {
 					priceInfoDialog.setBusy(false);
 					priceInfoDialog.close();
 					sap.m.MessageToast.show("details updated successfully");

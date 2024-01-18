@@ -47,16 +47,12 @@ sap.ui.define([
 			var jsonModel = new JSONModel({
 				strainList: [],
 				createMode: false,
-				serLayerbaseUrl: "https://demo.seedandbeyond.com:50000",
+				//serLayerbaseUrl: "https://goldfloraweb.seedandbeyond.com:50000",
+				serLayerbaseUrl: "https://login.seedandbeyond.com:50000",
 				userAuthPayload: {
-					"CompanyDB": "TMP",
-					"UserName": "manager",
-					"Password": "Welcome@8"
-				},
-				userAuthPayload2: {
-					"CompanyDB": "BBOD",
-					"UserName": "manager",
-					"Password": "#Nine@11!"
+					CompanyDB: "BHF_DEV",
+					UserName: "aag11143",
+					Password: "Beyond$357@Seed!"
 				},
 				//set the app navigation URL model
 				serviceLayerbaseUrl: "https://demo.seedandbeyond.com/webx/index.html#",

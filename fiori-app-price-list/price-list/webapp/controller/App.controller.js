@@ -27,7 +27,7 @@ sap.ui.define([
 			var that = this;
 			payLoad = JSON.stringify(payLoad);
 			$.ajax({
-				url: "/b1s/v1/Login",
+				url: "/b1s/v2/Login",
 				data: payLoad,
 				type: "POST",
 				dataType: "json", // expecting json response

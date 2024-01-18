@@ -30,7 +30,7 @@ sap.ui.define([
 		getAppConfigData: function () {
 			var jsonModel = this.getOwnerComponent().getModel("jsonModel");
 			var filters = "?$filter=U_NAPP eq 'AllApps'";
-			this.readServiecLayer("/b1s/v1/U_NCNFG" + filters, function (data) {
+			this.readServiecLayer("/b1s/v2/U_NCNFG" + filters, function (data) {
 				var uomVals = [],
 					uomObj;
 				if (data.value.length > 0) {
@@ -105,7 +105,7 @@ sap.ui.define([
 				baseUrl = "";
 			}
 			var settings = {
-				"url": baseUrl + "/b1s/v1/$batch",
+				"url": baseUrl + "/b1s/v2/$batch",
 				"method": "POST",
 				xhrFields: {
 					withCredentials: true
@@ -554,53 +554,160 @@ sap.ui.define([
 			});
 		},
 
+		// readServiecLayer: function (entity, callBack, busyDialog) {
+		// 	var that = this;
+		// 	var jsonModel = that.getOwnerComponent().getModel("jsonModel");
+		// 	var sessionID = jsonModel.getProperty("/sessionID");
+		// 	if (sessionID === undefined) {
+		// 		var loginPayLoad = jsonModel.getProperty("/userAuthPayload");
+		// 		loginPayLoad = JSON.stringify(loginPayLoad);
+		// 		if (busyDialog) {
+		// 			busyDialog.setBusy(true);
+		// 		}
+		// 		$.ajax({
+		// 			url: jsonModel.getProperty("/serLayerbaseUrl") + "/b1s/v1/Login",
+		// 			data: loginPayLoad,
+		// 			type: "POST",
+		// 			xhrFields: {
+		// 				withCredentials: true
+		// 			},
+		// 			dataType: "json", // expecting json response
+		// 			success: function (data) {
+		// 				jsonModel.setProperty("/sessionID", data.SessionId);
+		// 				//	var sessionID = that.getOwnerComponent().getModel("jsonModel").getProperty("/sessionID");
+		// 				$.ajax({
+		// 					type: "GET",
+		// 					xhrFields: {
+		// 						withCredentials: true
+		// 					},
+		// 					url: jsonModel.getProperty("/serLayerbaseUrl") + entity,
+		// 					setCookies: "B1SESSION=" + data.SessionId,
+		// 					dataType: "json",
+		// 					success: function (res) {
+		// 						if (busyDialog) {
+		// 							busyDialog.setBusy(false);
+		// 						}
+		// 						callBack.call(that, res);
+		// 					},
+		// 					error: function (error) {
+		// 						if (busyDialog) {
+		// 							busyDialog.setBusy(false);
+		// 						}
+		// 						MessageBox.error(error.responseJSON.error.message.value);
+		// 					}
+		// 				});
+		// 			},
+		// 			error: function () {
+		// 				sap.m.MessageToast.show("Error with authentication");
+		// 			}
+		// 		});
+		// 	} else {
+		// 		if (busyDialog) {
+		// 			busyDialog.setBusy(true);
+		// 		}
+		// 		$.ajax({
+		// 			type: "GET",
+		// 			xhrFields: {
+		// 				withCredentials: true
+		// 			},
+		// 			url: jsonModel.getProperty("/serLayerbaseUrl") + entity,
+		// 			setCookies: "B1SESSION=" + sessionID,
+		// 			dataType: "json",
+		// 			success: function (res) {
+		// 				if (busyDialog) {
+		// 					busyDialog.setBusy(false);
+		// 				}
+		// 				callBack.call(that, res);
+		// 			},
+		// 			error: function (error) {
+		// 				if (busyDialog) {
+		// 					busyDialog.setBusy(false);
+		// 				}
+		// 				MessageBox.error(error.responseJSON.error.message.value);
+		// 			}
+		// 		});
+		// 	}
+		// },
 		readServiecLayer: function (entity, callBack, busyDialog) {
 			var that = this;
 			var jsonModel = that.getOwnerComponent().getModel("jsonModel");
 			var sessionID = jsonModel.getProperty("/sessionID");
-			if (sessionID === undefined) {
-				var loginPayLoad = jsonModel.getProperty("/userAuthPayload");
-				loginPayLoad = JSON.stringify(loginPayLoad);
-				if (busyDialog) {
-					busyDialog.setBusy(true);
-				}
-				$.ajax({
-					url: jsonModel.getProperty("/serLayerbaseUrl") + "/b1s/v1/Login",
-					data: loginPayLoad,
-					type: "POST",
-					xhrFields: {
-						withCredentials: true
-					},
-					dataType: "json", // expecting json response
-					success: function (data) {
-						jsonModel.setProperty("/sessionID", data.SessionId);
-						//	var sessionID = that.getOwnerComponent().getModel("jsonModel").getProperty("/sessionID");
-						$.ajax({
-							type: "GET",
-							xhrFields: {
-								withCredentials: true
-							},
-							url: jsonModel.getProperty("/serLayerbaseUrl") + entity,
-							setCookies: "B1SESSION=" + data.SessionId,
-							dataType: "json",
-							success: function (res) {
-								if (busyDialog) {
-									busyDialog.setBusy(false);
-								}
-								callBack.call(that, res);
-							},
-							error: function (error) {
-								if (busyDialog) {
-									busyDialog.setBusy(false);
-								}
-								MessageBox.error(error.responseJSON.error.message.value);
-							}
-						});
-					},
-					error: function () {
-						sap.m.MessageToast.show("Error with authentication");
+			if (location.host.indexOf("webide") !== -1) {
+				if (sessionID === undefined) {
+					var loginPayLoad = jsonModel.getProperty("/userAuthPayload");
+					loginPayLoad = JSON.stringify(loginPayLoad);
+					if (busyDialog) {
+						busyDialog.setBusy(true);
 					}
-				});
+					$.ajax({
+						url: jsonModel.getProperty("/serLayerbaseUrl") + "/b1s/v2/Login",
+						data: loginPayLoad,
+						type: "POST",
+						xhrFields: {
+							withCredentials: true
+						},
+						dataType: "json", // expecting json response
+						success: function (data) {
+							that.getView().setBusy(false);
+							jsonModel.setProperty("/sessionID", data.SessionId);
+							//	var sessionID = that.getOwnerComponent().getModel("jsonModel").getProperty("/sessionID");
+							$.ajax({
+								type: "GET",
+								xhrFields: {
+									withCredentials: true
+								},
+								url: jsonModel.getProperty("/serLayerbaseUrl") + entity,
+								setCookies: "B1SESSION=" + data.SessionId,
+								dataType: "json",
+								success: function (res) {
+									if (busyDialog) {
+										busyDialog.setBusy(false);
+									}
+									sap.ui.core.BusyIndicator.hide();
+									callBack.call(that, res);
+								},
+								error: function (error) {
+									if (busyDialog) {
+										busyDialog.setBusy(false);
+									}
+									sap.ui.core.BusyIndicator.hide();
+									MessageBox.error(error.responseJSON.error.message.value);
+								}
+							});
+						},
+						error: function () {
+							that.getView().setBusy(false);
+							sap.m.MessageToast.show("Error with authentication");
+						}
+					});
+				} else {
+					if (busyDialog) {
+						busyDialog.setBusy(true);
+					}
+					$.ajax({
+						type: "GET",
+						xhrFields: {
+							withCredentials: true
+						},
+						url: jsonModel.getProperty("/serLayerbaseUrl") + entity,
+						//	setCookies: "B1SESSION=" + sessionID,
+						dataType: "json",
+						success: function (res) {
+							if (busyDialog) {
+								busyDialog.setBusy(false);
+							}
+							sap.ui.core.BusyIndicator.hide();
+							callBack.call(that, res);
+						},
+						error: function (error) {
+							if (busyDialog) {
+								busyDialog.setBusy(false);
+							}
+							sap.ui.core.BusyIndicator.hide();
+							MessageBox.error(error.responseJSON.error.message.value);
+						}
+					});
+				}
 			} else {
 				if (busyDialog) {
 					busyDialog.setBusy(true);
@@ -610,105 +717,142 @@ sap.ui.define([
 					xhrFields: {
 						withCredentials: true
 					},
-					url: jsonModel.getProperty("/serLayerbaseUrl") + entity,
-					setCookies: "B1SESSION=" + sessionID,
+					url: entity,
+					//	setCookies: "B1SESSION=" + sessionID,
 					dataType: "json",
 					success: function (res) {
 						if (busyDialog) {
 							busyDialog.setBusy(false);
 						}
+						sap.ui.core.BusyIndicator.hide();
 						callBack.call(that, res);
 					},
 					error: function (error) {
 						if (busyDialog) {
 							busyDialog.setBusy(false);
 						}
+						sap.ui.core.BusyIndicator.hide();
 						MessageBox.error(error.responseJSON.error.message.value);
 					}
 				});
 			}
 		},
+		// updateServiecLayer: function (entity, callBack, payLoad, method, busyDialog) {
+		// 	var that = this;
+		// 	var jsonModel = this.getOwnerComponent().getModel("jsonModel");
+		// 	var sessionID = jsonModel.getProperty("/sessionID");
+		// 	if (sessionID === undefined) {
+		// 		var loginPayLoad = jsonModel.getProperty("/userAuthPayload");
+		// 		loginPayLoad = JSON.stringify(loginPayLoad);
+		// 		if (busyDialog) {
+		// 			busyDialog.setBusy(true);
+		// 		}
+		// 		$.ajax({
+		// 			url: jsonModel.getProperty("/serLayerbaseUrl") + "/b1s/v1/Login",
+		// 			data: loginPayLoad,
+		// 			type: "POST",
+		// 			xhrFields: {
+		// 				withCredentials: true
+		// 			},
+		// 			dataType: "json", // expecting json response
+		// 			success: function (data) {
+		// 				if (busyDialog) {
+		// 					busyDialog.setBusy(false);
+		// 				}
+		// 				jsonModel.setProperty("/sessionID", data.SessionId);
+		// 				payLoad = JSON.stringify(payLoad);
+		// 				$.ajax({
+		// 					type: method,
+		// 					xhrFields: {
+		// 						withCredentials: true
+		// 					},
+		// 					url: jsonModel.getProperty("/serLayerbaseUrl") + entity,
+		// 					setCookies: "B1SESSION=" + data.SessionId,
+		// 					dataType: "json",
+		// 					data: payLoad,
+		// 					success: function (res) {
+		// 						if (busyDialog) {
+		// 							busyDialog.setBusy(false);
+		// 						}
+		// 						callBack.call(that, res);
+		// 					},
+		// 					error: function (error) {
+		// 						if (busyDialog) {
+		// 							busyDialog.setBusy(false);
+		// 						}
+		// 						MessageBox.error(error.responseJSON.error.message.value);
+		// 					}
+		// 				});
+		// 			},
+		// 			error: function () {
+		// 				sap.m.MessageToast.show("Error with authentication");
+		// 			}
+		// 		});
+		// 	} else {
+		// 		payLoad = JSON.stringify(payLoad);
+		// 		if (busyDialog) {
+		// 			busyDialog.setBusy(true);
+		// 		}
+		// 		$.ajax({
+		// 			type: method,
+		// 			xhrFields: {
+		// 				withCredentials: true
+		// 			},
+		// 			url: jsonModel.getProperty("/serLayerbaseUrl") + entity,
+		// 			setCookies: "B1SESSION=" + sessionID,
+		// 			dataType: "json",
+		// 			data: payLoad,
+		// 			success: function (res) {
+		// 				if (busyDialog) {
+		// 					busyDialog.setBusy(false);
+		// 				}
+		// 				callBack.call(that, res);
+		// 			},
+		// 			error: function (error) {
+		// 				if (busyDialog) {
+		// 					busyDialog.setBusy(false);
+		// 				}
+		// 				MessageBox.error(error.responseJSON.error.message.value);
+		// 			}
+		// 		});
+		// 	}
+		// },
 		updateServiecLayer: function (entity, callBack, payLoad, method, busyDialog) {
 			var that = this;
 			var jsonModel = this.getOwnerComponent().getModel("jsonModel");
-			var sessionID = jsonModel.getProperty("/sessionID");
-			if (sessionID === undefined) {
-				var loginPayLoad = jsonModel.getProperty("/userAuthPayload");
-				loginPayLoad = JSON.stringify(loginPayLoad);
-				if (busyDialog) {
-					busyDialog.setBusy(true);
-				}
-				$.ajax({
-					url: jsonModel.getProperty("/serLayerbaseUrl") + "/b1s/v1/Login",
-					data: loginPayLoad,
-					type: "POST",
-					xhrFields: {
-						withCredentials: true
-					},
-					dataType: "json", // expecting json response
-					success: function (data) {
-						if (busyDialog) {
-							busyDialog.setBusy(false);
-						}
-						jsonModel.setProperty("/sessionID", data.SessionId);
-						payLoad = JSON.stringify(payLoad);
-						$.ajax({
-							type: method,
-							xhrFields: {
-								withCredentials: true
-							},
-							url: jsonModel.getProperty("/serLayerbaseUrl") + entity,
-							setCookies: "B1SESSION=" + data.SessionId,
-							dataType: "json",
-							data: payLoad,
-							success: function (res) {
-								if (busyDialog) {
-									busyDialog.setBusy(false);
-								}
-								callBack.call(that, res);
-							},
-							error: function (error) {
-								if (busyDialog) {
-									busyDialog.setBusy(false);
-								}
-								MessageBox.error(error.responseJSON.error.message.value);
-							}
-						});
-					},
-					error: function () {
-						sap.m.MessageToast.show("Error with authentication");
-					}
-				});
-			} else {
-				payLoad = JSON.stringify(payLoad);
-				if (busyDialog) {
-					busyDialog.setBusy(true);
-				}
-				$.ajax({
-					type: method,
-					xhrFields: {
-						withCredentials: true
-					},
-					url: jsonModel.getProperty("/serLayerbaseUrl") + entity,
-					setCookies: "B1SESSION=" + sessionID,
-					dataType: "json",
-					data: payLoad,
-					success: function (res) {
-						if (busyDialog) {
-							busyDialog.setBusy(false);
-						}
-						callBack.call(that, res);
-					},
-					error: function (error) {
-						if (busyDialog) {
-							busyDialog.setBusy(false);
-						}
-						MessageBox.error(error.responseJSON.error.message.value);
-					}
-				});
+			payLoad = JSON.stringify(payLoad);
+			if (busyDialog) {
+				busyDialog.setBusy(true);
 			}
+			var sUrl;
+			if (location.host.indexOf("webide") !== -1) {
+				sUrl = jsonModel.getProperty("/serLayerbaseUrl") + entity;
+			} else {
+				sUrl = entity;
+			}
+			$.ajax({
+				type: method,
+				xhrFields: {
+					withCredentials: true
+				},
+				url: sUrl,
+				//	setCookies: "B1SESSION=" + sessionID,
+				dataType: "json",
+				data: payLoad,
+				success: function (res) {
+					if (busyDialog) {
+						busyDialog.setBusy(false);
+					}
+					callBack.call(that, res);
+				},
+				error: function (error) {
+					if (busyDialog) {
+						busyDialog.setBusy(false);
+					}
+					MessageBox.error(error.responseJSON.error.message.value);
+				}
+			});
 		},
-
 		onChangeMultiInput: function (oEvent) {
 			oEvent.getSource()._bUseDialog = false;
 			var value = oEvent.getSource().getValue();
@@ -735,7 +879,7 @@ sap.ui.define([
 			var filters = "?$filter=U_NITTP eq 'METRC'";
 			jsonModel.setProperty("/metrcBusy", true);
 			jsonModel.setProperty("/enableSyncNow", false);
-			this.readServiecLayer("/b1s/v1/NINGT" + filters, function (data) {
+			this.readServiecLayer("/b1s/v2/NINGT" + filters, function (data) {
 				jsonModel.setProperty("/metrcBusy", false);
 				if (data.value.length > 0) {
 					jsonModel.setProperty("/metrcData", data.value[0]);
@@ -797,7 +941,7 @@ sap.ui.define([
 				U_NLGST: statusCode,
 				U_NAPP: "CP"
 			};
-			this.updateServiecLayer("/b1s/v1/NMTLG", function () {
+			this.updateServiecLayer("/b1s/v2/NMTLG", function () {
 
 			}.bind(this), data, "POST");
 		},
