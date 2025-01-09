@@ -1,6 +1,6 @@
 <mvc:View controllerName="com.9b.priceList.controller.PriceList" xmlns:f="sap.f" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m">
-	<f:DynamicPage showFooter="{jsonModel>/createMode}">
+	<f:DynamicPage showFooter="{jsonModel>/createMode}" id="sPage">
 		<f:title>
 			<f:DynamicPageTitle>
 				<f:actions>
@@ -17,7 +17,7 @@
 		</f:footer>
 		<f:content>
 			<VBox>
-				<Table showNoData="true"  mode="None" growing="true" growingScrollToLoad="true"
+				<Table showNoData="true"  mode="None" growing="false" growingScrollToLoad="false"
 					items="{path:'jsonModel>/itemMasterData',templateShareable:true}" id="InventoryTable" updateFinished="updateFinished"
 					updateStarted="updateStarted">
 					<headerToolbar>

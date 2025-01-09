@@ -12,12 +12,32 @@ sap.ui.define([
 
 		onInit: function () {
 			//	this.getAppConfigData();
+			this.onListScroll();
 
 			this.getOwnerComponent().getRouter(this).attachRoutePatternMatched(this._objectMatched, this);
 			var that = this;
 			setInterval(function () {
 				that.onChanagePriceList();
 			}, 180000);
+		},
+		onListScroll: function () {
+			var skip = 0; // Start pointing of record
+			var top = 100; //Size of the record
+			//Event delegate to bind pagination action
+			var oTable = this.getView().byId("InventoryTable");
+			oTable.addEventDelegate({
+				onAfterRendering: function () {
+					//Mouse Scroll Event
+					$('.sapFDynamicPageWithScroll, .sapMScrollBarInnerDiv').on('DOMMouseScroll mousewheel scroll', function (e) {
+						var domRf = oTable.getDomRef();
+						var sHight = domRf.scrollHeight;
+						if (sHight == 0) {
+							console.log(sHight);
+						}
+					});
+
+				}
+			});
 		},
 
 		_objectMatched: function (oEvent) {
@@ -67,7 +87,7 @@ sap.ui.define([
 			}
 			var jsonModel = this.getOwnerComponent().getModel("jsonModel");
 			var filters = "?$filter=PriceList eq " + "'" + priceList + "'";
-				var orderBy = "&$orderby=ItemCode";
+			var orderBy = "&$orderby=ItemCode";
 			this.readServiecLayer("/b1s/v1/sml.svc/PRICELISTSQUERY" + filters + orderBy, function (data) {
 				jsonModel.setProperty("/itemMasterData", data.value);
 				jsonModel.setProperty("/itemCount", data.value.length);
@@ -98,7 +118,7 @@ sap.ui.define([
 					}]
 				};
 				var priceList = Number(info.PriceList);
-			
+
 				that.updateServiecLayer("/b1s/v1/Items" + "('" + info.ItemCode + "')", function () {
 					if (length === i) {
 						that.getView().setBusy(false);
