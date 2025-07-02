@@ -114,44 +114,21 @@ sap.ui.define([
 			this._page = 0;
 			this._loading = false;
 			that.orSearchFilter = [];
-
+			const  filterStr = "?$filter=PriceList eq '" + priceList + "' and ";
+			var tokenFilters = "";
+			var tokenArr = [];
 			$.each(elementC.getTokens(), function (i, info) {
 				var value = info.getText();
 				if (value !== removedText) {
-
-					const filterStr =
-						"?$filter=PriceList eq '" + priceList + "' and " +
-						"(contains(ItemName_Caps, '" + encodeURIComponent(value.toUpperCase()) + "'))" +
-						"&$orderby=ItemCode";
-
-					that.readServiecLayer("/b1s/v1/sml.svc/PRICELISTSQUERY" + filterStr, (data) => {
-						that.orSearchFilter.push(data.value);
-
-						if (elementC.getTokens().length == i + 1) {
-
-							const unique = Array.from(
-								new Map(that.orSearchFilter.flat().map(item => [JSON.stringify(item), item])).values());
-
-							jsonModel.setProperty("/itemMasterData", unique);
-							jsonModel.setProperty("/itemCount", unique.length || 0);
-
-							andFilter.push(new sap.ui.model.Filter({
-								filters: unique,
-								and: false,
-								caseSensitive: false
-							}));
-
-							that.getView().byId("InventoryTable").getBinding("items").filter(andFilter);
-
-						}
-
-					}, that.getView());
-
-					// orFilter.push(new sap.ui.model.Filter("ItemName_Caps", "Contains", value.toLowerCase()));
-					// orFilter.push(new sap.ui.model.Filter("ItemName", "Contains", value.toLowerCase()));
-
+					tokenArr.push("(contains(ItemName_Caps, '" + encodeURIComponent(value.toUpperCase()) + "'))");
 				}
 			});
+			tokenFilters = tokenArr.join(" and ");
+			const orderBy = "&$orderby=ItemCode";
+			that.readServiecLayer("/b1s/v1/sml.svc/PRICELISTSQUERY" + filterStr + tokenFilters + orderBy, (data) => {
+				jsonModel.setProperty("/itemMasterData", data.value);
+				jsonModel.setProperty("/itemCount", data.value.length || 0);
+			}, that.getView());
 
 		},
 

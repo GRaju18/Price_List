@@ -16,27 +16,22 @@
 			</OverflowToolbar>
 		</f:footer>
 		<f:content>
-			
 			<VBox>
-				<Table showNoData="true"  mode="None" growing="true" growingScrollToLoad="true" sticky="HeaderToolbar" 
-					items="{jsonModel>/itemMasterData}" id="InventoryTable" >
+				<Table showNoData="true" mode="None" growing="true" growingScrollToLoad="true" sticky="HeaderToolbar" items="{jsonModel>/itemMasterData}"
+					id="InventoryTable">
 					<headerToolbar>
 						<Toolbar>
-							 <content>
-								<Title text="Items ({jsonModel>/itemCount})" width="7rem" />
+							<content>
+								<Title text="Items ({jsonModel>/itemCount})" width="7rem"/>
 								<ToolbarSpacer/>
 								<!--<SearchField change="onSearch" width="60%"/>-->
-								
-								<MultiInput  placeholder="Search" tokenUpdate="tokenUpdateMultiInput" submit="onSubmitMultiInput" showValueHelp="false"
-								liveChange="onChangeMultiInput" id="searchFieldTable" enableMultiLineMode="true"/>
-								
-								
-								
+								<MultiInput placeholder="Search" tokenUpdate="tokenUpdateMultiInput" submit="onSubmitMultiInput" showValueHelp="false"
+									liveChange="onChangeMultiInput" id="searchFieldTable" enableMultiLineMode="true"/>
 								<Select busy="{jsonModel>/priceBusy}" width="18rem" change="onChanagePriceList" items="{jsonModel>/priceListData}">
 									<core:Item key="{jsonModel>U_License_Number}" text="{jsonModel>U_Name} - {jsonModel>U_License_Number}"/>
 									<core:Item key="{jsonModel>BasePriceList}" text="{jsonModel>BasePriceList} - {jsonModel>PriceListName}"/>
 								</Select>
-							 </content>
+							</content>
 						</Toolbar>
 					</headerToolbar>
 					<columns>
@@ -59,8 +54,6 @@
 					</ColumnListItem>
 				</Table>
 			</VBox>
-			
-			
 			<!--<VBox height="100%">-->
 			<!--	<VBox height="100%" class="fullHeight" width="100%">-->
 			<!--		<table:Table class="uiTableTable" id="InventoryTable" selectionMode="MultiToggle" rowSelectionChange="handleRowSelection"-->
@@ -72,10 +65,9 @@
 			<!--					<ToolbarSpacer/>-->
 			<!--					<SearchField liveChange="onSearch" width="60%"/>-->
 			<!--					<Select busy="{jsonModel>/priceBusy}" width="18rem" change="onChanagePriceList" items="{jsonModel>/priceListData}">-->
-									<!--<core:Item key="{jsonModel>U_License_Number}" text="{jsonModel>U_Name} - {jsonModel>U_License_Number}"/>-->
+			<!--<core:Item key="{jsonModel>U_License_Number}" text="{jsonModel>U_Name} - {jsonModel>U_License_Number}"/>-->
 			<!--						<core:Item key="{jsonModel>BasePriceList}" text="{jsonModel>BasePriceList} - {jsonModel>PriceListName}"/>-->
 			<!--					</Select>-->
-							
 			<!--				</OverflowToolbar>-->
 			<!--			</table:extension>-->
 			<!--			<table:columns>-->
@@ -101,10 +93,6 @@
 			<!--		</table:Table>-->
 			<!--	</VBox>-->
 			<!--</VBox>-->
-			
-			
-			
-			
 		</f:content>
 	</f:DynamicPage>
 </mvc:View>
