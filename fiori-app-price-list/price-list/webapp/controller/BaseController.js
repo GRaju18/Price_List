@@ -8,6 +8,7 @@ sap.ui.define([
 ], function (Controller, UIComponent, History, MessageBox, Filter) {
 	"use strict";
 	return Controller.extend("com.9b.priceList.controller.BaseController", {
+		orSearchFilter:[],
 		/**
 		 * Convenience method for accessing the router.
 		 * @public
@@ -482,8 +483,10 @@ sap.ui.define([
 			var value = oEvent.getSource().getValue();
 			if (!value) {
 				this.fillFilterLoad(oEvent.getSource());
+				// this.orSearchFilter = [];
 				return;
 			}
+			
 			value = value.replace(/\^/g, "");
 			oEvent.getSource().addToken(new sap.m.Token({
 				key: value,
@@ -577,6 +580,10 @@ sap.ui.define([
 						//	var sessionID = that.getOwnerComponent().getModel("jsonModel").getProperty("/sessionID");
 						$.ajax({
 							type: "GET",
+							header: {
+								"B1S-CaseInsensitive": true,
+							},
+						
 							xhrFields: {
 								withCredentials: true
 							},
@@ -610,6 +617,9 @@ sap.ui.define([
 					xhrFields: {
 						withCredentials: true
 					},
+					header: {
+								"B1S-CaseInsensitive": true,
+							},
 					url: jsonModel.getProperty("/serLayerbaseUrl") + entity,
 					setCookies: "B1SESSION=" + sessionID,
 					dataType: "json",
@@ -724,6 +734,7 @@ sap.ui.define([
 				this.fillFilterLoad(oEvent.getSource());
 			}
 		},
+		
 
 		metricSyncFail: function (dialog, error) {
 			sap.m.MessageBox.error(JSON.parse(error.responseText).Message);

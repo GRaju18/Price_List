@@ -47,11 +47,11 @@ sap.ui.define([
 			var jsonModel = new JSONModel({
 				strainList: [],
 				createMode: false,
-				serLayerbaseUrl: "https://demo.seedandbeyond.com:50000",
+				serLayerbaseUrl: "https://ghdev.seedandbeyond.com:50000",
 				userAuthPayload: {
-					"CompanyDB": "TMP",
-					"UserName": "manager",
-					"Password": "Welcome@8"
+					"CompanyDB": "__QAS",
+					"UserName": "aag11163",
+					"Password": "#!GLaSs@HoUsE!#910174!#"
 				},
 				userAuthPayload2: {
 					"CompanyDB": "BBOD",

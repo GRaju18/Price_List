@@ -1,5 +1,5 @@
 <mvc:View controllerName="com.9b.priceList.controller.PriceList" xmlns:f="sap.f" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc"
-	xmlns="sap.m">
+	xmlns="sap.m" xmlns:table="sap.ui.table">
 	<f:DynamicPage showFooter="{jsonModel>/createMode}" id="sPage">
 		<f:title>
 			<f:DynamicPageTitle>
@@ -16,19 +16,27 @@
 			</OverflowToolbar>
 		</f:footer>
 		<f:content>
+			
 			<VBox>
-				<Table showNoData="true"  mode="None" growing="false" growingScrollToLoad="false"
-					items="{path:'jsonModel>/itemMasterData',templateShareable:true}" id="InventoryTable" updateFinished="updateFinished"
-					updateStarted="updateStarted">
+				<Table showNoData="true"  mode="None" growing="true" growingScrollToLoad="true" sticky="HeaderToolbar" 
+					items="{jsonModel>/itemMasterData}" id="InventoryTable" >
 					<headerToolbar>
 						<Toolbar>
-							<Title text="Items ({jsonModel>/itemCount})"/>
-							<ToolbarSpacer/>
-							<SearchField liveChange="onSearch" width="60%"/>
-							<Select busy="{jsonModel>/priceBusy}" width="18rem" change="onChanagePriceList" items="{jsonModel>/priceListData}">
-								<!--<core:Item key="{jsonModel>U_License_Number}" text="{jsonModel>U_Name} - {jsonModel>U_License_Number}"/>-->
-								<core:Item key="{jsonModel>BasePriceList}" text="{jsonModel>BasePriceList} - {jsonModel>PriceListName}"/>
-							</Select>
+							 <content>
+								<Title text="Items ({jsonModel>/itemCount})" width="7rem" />
+								<ToolbarSpacer/>
+								<!--<SearchField change="onSearch" width="60%"/>-->
+								
+								<MultiInput  placeholder="Search" tokenUpdate="tokenUpdateMultiInput" submit="onSubmitMultiInput" showValueHelp="false"
+								liveChange="onChangeMultiInput" id="searchFieldTable" enableMultiLineMode="true"/>
+								
+								
+								
+								<Select busy="{jsonModel>/priceBusy}" width="18rem" change="onChanagePriceList" items="{jsonModel>/priceListData}">
+									<core:Item key="{jsonModel>U_License_Number}" text="{jsonModel>U_Name} - {jsonModel>U_License_Number}"/>
+									<core:Item key="{jsonModel>BasePriceList}" text="{jsonModel>BasePriceList} - {jsonModel>PriceListName}"/>
+								</Select>
+							 </content>
 						</Toolbar>
 					</headerToolbar>
 					<columns>
@@ -51,6 +59,52 @@
 					</ColumnListItem>
 				</Table>
 			</VBox>
+			
+			
+			<!--<VBox height="100%">-->
+			<!--	<VBox height="100%" class="fullHeight" width="100%">-->
+			<!--		<table:Table class="uiTableTable" id="InventoryTable" selectionMode="MultiToggle" rowSelectionChange="handleRowSelection"-->
+			<!--			showNoData="true"  mode="None" growing="true" growingScrollToLoad="true"-->
+			<!--			cellClick="cellClick" visibleRowCountMode="Auto" rows="{path:'jsonModel>/itemMasterData'}" customFilter="onFilterTable">-->
+			<!--			<table:extension>-->
+			<!--				<OverflowToolbar>-->
+			<!--					<Title text="Items ({jsonModel>/itemCount})"/>-->
+			<!--					<ToolbarSpacer/>-->
+			<!--					<SearchField liveChange="onSearch" width="60%"/>-->
+			<!--					<Select busy="{jsonModel>/priceBusy}" width="18rem" change="onChanagePriceList" items="{jsonModel>/priceListData}">-->
+									<!--<core:Item key="{jsonModel>U_License_Number}" text="{jsonModel>U_Name} - {jsonModel>U_License_Number}"/>-->
+			<!--						<core:Item key="{jsonModel>BasePriceList}" text="{jsonModel>BasePriceList} - {jsonModel>PriceListName}"/>-->
+			<!--					</Select>-->
+							
+			<!--				</OverflowToolbar>-->
+			<!--			</table:extension>-->
+			<!--			<table:columns>-->
+			<!--				<table:Column sortProperty="ItemCode" filterProperty="ItemCode" tooltip="Item Code">-->
+			<!--					<Label text="Item Code"  design="Bold"/>-->
+			<!--					<table:template>-->
+			<!--						<Text text="{jsonModel>ItemCode}" wrapping="true" />-->
+			<!--					</table:template>-->
+			<!--				</table:Column>-->
+			<!--				<table:Column sortProperty="ItemName" filterProperty="ItemName" tooltip="Item Name">-->
+			<!--					<Label text="Item Name" design="Bold"/>-->
+			<!--					<table:template>-->
+			<!--						<Text text="{jsonModel>ItemName}" wrapping="true"/>-->
+			<!--					</table:template>-->
+			<!--				</table:Column>-->
+			<!--				<table:Column sortProperty="Price_Each" filterProperty="Price_Each" tooltip="Price_Each">-->
+			<!--					<Label text="Price" design="Bold"/>-->
+			<!--					<table:template>-->
+			<!--					 <Input value="{jsonModel>Price_Each}" type="Number" editable="{jsonModel>/createMode}" change="handleValueChange"/>-->
+			<!--					</table:template>-->
+			<!--				</table:Column>-->
+			<!--			</table:columns>-->
+			<!--		</table:Table>-->
+			<!--	</VBox>-->
+			<!--</VBox>-->
+			
+			
+			
+			
 		</f:content>
 	</f:DynamicPage>
 </mvc:View>
