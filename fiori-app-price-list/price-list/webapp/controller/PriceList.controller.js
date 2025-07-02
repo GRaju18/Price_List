@@ -28,23 +28,13 @@ sap.ui.define([
 
 			var oTable = this.getView().byId("InventoryTable");
 			oTable.attachUpdateFinished(this.onScrollLoad.bind(this));
-			// oTable.attachUpdateFinished(this.onScrollLoad.bind(this)).once();
 
 			// Optional: Refresh every 3 mins
 			setInterval(function () {
-				that.onChanagePriceList(true); // Reset flag
+				that.onChanagePriceList(); // Reset flag
 			}, 180000);
 
 		},
-
-		// updateStarted: function () {
-		// 	this._loading = true;
-		// },
-
-		// updateFinished: function () {
-		// 	this._loading = false;
-		// 	this._page++;
-		// },
 
 		_objectMatched: function (oEvent) {
 			if (oEvent.getParameter("name") === "PriceList") {
@@ -52,6 +42,7 @@ sap.ui.define([
 				this.loadPriceListData();
 				this.onChanagePriceList();
 				jsonModel.setProperty("/selectedPriceList", 1);
+				jsonModel.setProperty("/elementC", "");
 
 			}
 		},
@@ -110,65 +101,46 @@ sap.ui.define([
 			var priceList = jsonModel.getProperty("/selectedPriceList");
 			var itemsData = jsonModel.getProperty("/itemMasterData");
 
+			if (!elementC) {
+				elementC = jsonModel.getProperty("/elementC");
+			} else {
+				jsonModel.setProperty("/elementC", elementC);
+			}
+
 			// Reset paging
 			this._page = 0;
 			this._loading = false;
 			that.orSearchFilter = [];
-			const  filterStr = "?$filter=PriceList eq '" + priceList + "' and ";
-			var tokenFilters = "";
-			var tokenArr = [];
-			$.each(elementC.getTokens(), function (i, info) {
-				var value = info.getText();
-				if (value !== removedText) {
-					tokenArr.push("(contains(ItemName_Caps, '" + encodeURIComponent(value.toUpperCase()) + "'))");
-				}
-			});
-			tokenFilters = tokenArr.join(" and ");
-			const orderBy = "&$orderby=ItemCode";
-			that.readServiecLayer("/b1s/v1/sml.svc/PRICELISTSQUERY" + filterStr + tokenFilters + orderBy, (data) => {
-				jsonModel.setProperty("/itemMasterData", data.value);
-				jsonModel.setProperty("/itemCount", data.value.length || 0);
-			}, that.getView());
 
-		},
+			if (elementC.getTokens()[0].getText() != removedText) {
 
-		onSearch: function (oEvent) {
-			const query = oEvent.getParameter("value") || "";
-			const jsonModel = this.getOwnerComponent().getModel("jsonModel");
-			const priceList = jsonModel.getProperty("/selectedPriceList");
+				const filterStr = "?$filter=PriceList eq '" + priceList + "' and ";
+				var tokenFilters = "";
+				var tokenArr = [];
+				$.each(elementC.getTokens(), function (i, info) {
+					var value = info.getText();
+					if (value !== removedText) {
+						tokenArr.push("(contains(ItemName_Caps, '" + encodeURIComponent(value.toUpperCase()) + "'))");
+					}
+				});
+				tokenFilters = tokenArr.join(" and ");
+				const orderBy = "&$orderby=ItemCode";
+				that.readServiecLayer("/b1s/v1/sml.svc/PRICELISTSQUERY" + filterStr + tokenFilters + orderBy, (data) => {
+					jsonModel.setProperty("/itemMasterData", data.value);
+					jsonModel.setProperty("/itemCount", data.value.length || 0);
+				}, that.getView());
 
-			var itemsData = jsonModel.getProperty("/itemMasterData");
+			} else {
+				jsonModel.setProperty("/itemMasterData", []);
+				that.onChanagePriceList();
 
-			// Reset paging
-			this._page = 0;
-			this._loading = false;
+			}
 
-			// Server-side filter for contains (substringof in OData v2)
-			const filterStr =
-				"?$filter=PriceList eq '" + priceList + "' and " +
-				"(contains(ItemCode, '" + encodeURIComponent(query) + "') or contains(ItemName, '" + encodeURIComponent(query) + "'))" +
-				"&$top=" + this._pageSize +
-				"&$skip=" + (this._page * this._pageSize) +
-				"&$orderby=ItemCode";
-
-			//  const filterStr = 
-			// "?$filter=PriceList eq '" + priceList + "' and " +
-			// "(substringof('" + query + "', ItemCode) or substringof('" + query + "', ItemName))" +
-			// "&$top=" + this._pageSize +
-			// "&$skip=" + (this._page * this._pageSize) +
-			// "&$orderby=ItemCode";
-
-			this.readServiecLayer("/b1s/v1/sml.svc/PRICELISTSQUERY" + filterStr, (data) => {
-				jsonModel.setProperty("/itemMasterData", data.value || []);
-				jsonModel.setProperty("/itemCount", data.value.length || 0);
-			}, this.getView());
 		},
 
 		onChanagePriceList: function (evt) {
 			var that = this;
 			var jsonModel = this.getOwnerComponent().getModel("jsonModel");
-			// var priceList = Number(evt?.getParameters().selectedItem.getKey() || 1 ) ; // Or store last selected
-
 			var selectedPriceList = jsonModel.getProperty("/selectedPriceList");
 
 			var priceList;
@@ -203,6 +175,13 @@ sap.ui.define([
 					var combined = currentData.concat(data.value || []);
 					jsonModel.setProperty("/itemMasterData", combined);
 					jsonModel.setProperty("/itemCount", combined.length);
+
+					var searchField = that.getView().byId("searchFieldTable").mProperties._semanticFormValue;
+
+					if (!!searchField) {
+						that.fillFilterLoad();
+					}
+
 					that._page++;
 
 					resolve(); // Done
@@ -212,82 +191,6 @@ sap.ui.define([
 				});
 			});
 		},
-
-		// onChanagePriceList: function (evt, reset) {
-		// 	var jsonModel = this.getOwnerComponent().getModel("jsonModel");
-		// 	if (this._loading) return;
-
-		// 	var that = this;
-		// 	var priceList = 1;
-
-		// 	if (evt) {
-		// 		priceList = Number(evt.getParameters().selectedItem.getKey());
-		// 	}
-
-		// 	if (reset) {
-		// 		this._page = 0;
-		// 		jsonModel.setProperty("/itemMasterData", []);
-		// 	}
-
-		// 	this._loading = true;
-
-		// 	var filters = 
-		// 		"?$filter=PriceList eq '" + priceList + "'" +
-		// 		"&$skip=" + (this._page * this._pageSize) +
-		// 		"&$top=" + this._pageSize +
-		// 		"&$orderby=ItemCode";
-
-		// 	this.readServiecLayer("/b1s/v1/sml.svc/PRICELISTSQUERY" + filters, function (data) {
-		// 		var currentData = jsonModel.getProperty("/itemMasterData") || [];
-		// 		var newData = data.value || [];
-		// 		jsonModel.setProperty("/itemMasterData", currentData.concat(newData));
-		// 		jsonModel.setProperty("/itemCount", currentData.length + newData.length);
-
-		// 		that._page++;
-		// 		that._loading = false;
-		// 	}, this.getView());
-		// },
-
-		// onChanagePriceList: function (evt) {
-		// 	var jsonModel = this.getOwnerComponent().getModel("jsonModel");
-		// 	if (this._loading) return;
-
-		// 	var that = this;
-		// 	var priceList;
-		// 	if (!evt) {
-		// 		priceList = 1;
-		// 	} else {
-		// 		priceList = evt.getParameters().selectedItem.getKey();
-		// 		priceList = Number(priceList);
-		// 		this._page = 0;
-		// 		this._pageSize = 100;
-		// 		this._loading = false;
-		// 	}
-
-		// 	// var filters = "?$filter=PriceList eq " + "'" + priceList + "' and page '"  + this._page + "' &size"  + this._pageSize ;
-		// 	var filters = 
-		// 	  "?$filter=PriceList eq '" + priceList + "'" +
-		// 	  "&$skip=" + (this._page * this._pageSize) +
-		// 	  "&$top=" + this._pageSize;
-
-		// 	var currentData = jsonModel.getProperty("/itemMasterData");
-
-		// 	var orderBy = "&$orderby=ItemCode";
-		// 	this.readServiecLayer("/b1s/v1/sml.svc/PRICELISTSQUERY" + filters + orderBy, function (data) {
-		// 		jsonModel.setProperty("/itemMasterData",currentData.concat(data.value));
-		// 		jsonModel.setProperty("/itemCount", currentData.length);
-		// 		that._page++;
-		//     	that._loading = false;
-		// 	}, this.getView());
-
-		// 	var filters = "?$filter=PriceList eq " + "'" + priceList + "'";
-		// 	var orderBy = "&$orderby=ItemCode";
-		// 	this.readServiecLayer("/b1s/v1/sml.svc/PRICELISTSQUERY" + filters + orderBy, function (data) {
-		// 		jsonModel.setProperty("/itemMasterData", data.value);
-		// 		jsonModel.setProperty("/itemCount", data.value.length);
-		// 	}, this.getView());
-
-		// },
 
 		handleEditSave: function () {
 			var that = this;
